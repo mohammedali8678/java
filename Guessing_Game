@@ -1,36 +1,82 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class GuessingGame {
-    public static void main(String[] args){
-        Scanner Scanner = new Scanner(System.in);
+public class NumberGuesssingGame{
+    public static void main(String[] args)
+    {
+        Scanner scanner = new Scanner(System.in);
         Random random = new Random();
-        int numberToGuess = random.nextInt(100)+1;
-        int guess;
-        int numberOfTries = 0;
-        boolean win = false;
+        boolean playAgain = true;
 
-        System.out.println("Welcome to the Number Guessing Game! ");
-        System.out.println("I have selected a random number between 1 to 100");
-        System.out.println("try to guess it!");
+        while (playAgain){
+            System.out.println("Choose a difficulty level: ");
+            System.out.println("1. Easy (1-50, 10 attempts)");
+            System.out.println("2. Medium (1-100, 7 attempts)");
+            System.out.println("3. Hard (1-200, 5 attempts)");
+            System.out.println("Enter your choice(1/2/3): ");
+            int difficulty = scanner.nextInt();
+            
+            int maxNumber = 100;
+            int maxTries = 7;
 
-        while(!win){
-            System.out.print("ENter your guess: ");
-            guess = Scanner.nextInt();
-            numberOfTries++;
+            switch (difficulty){
+                case 1:
+                    maxNumber=50;
+                    maxTries = 10;
+                    break;
+                case 2:
+                    maxNumber=100;
+                    maxTries = 7;
+                    break;
+                case 3:
+                    maxNumber=200;
+                    maxTries = 5;
+                    break;
+                default:
+                    System.out.println("Invalid Choice Defaulting to Medium."); 
+            }
+            int numberToGuess = random.nextInt(maxNumber)+1;
+            int numberOfTries = 0;
+            int guess;
+            boolean win= false;
+            long startTime = System.currentTimeMillis();
 
-            if(guess == numberToGuess){
-                win = true;
-                System.out.println("Correct! you Win");
-                System.out.println("It took "+ numberOfTries +" tries.");
+            System.out.println("I have randomly chosen a number between 1 to "+maxNumber+".");
+            System.out.println("Try to guess it! You have "+maxTries+" attempts.");
+
+            while (!win && numberOfTries<maxTries) {
+                System.out.println("Enter your guess: ");
+                guess = scanner.nextInt();
+                numberOfTries++;
+
+                if (guess == numberToGuess) {
+                    win = true;
+                    long endTime = System.currentTimeMillis();
+                    long timeTaken = (endTime-startTime)/1000;
+                    int score = (maxTries -numberOfTries+1)*10;
+                    System.out.println("Correct! You Win");
+                    System.out.println("It took you "+numberOfTries+" tries and "+timeTaken+" seconds.");
+                    System.out.println("Your Score: "+score);
+                }
+                else if (guess < numberToGuess) {
+                    System.out.println("Something higher!");
+                } else {
+                    System.out.println("Something lower!");
+                }
+
+                if (numberOfTries == maxTries && !win) {
+                    System.out.println("You've used all your attempts. The correct number was " + numberToGuess);
+                }
             }
-            else if(guess < numberToGuess){
-                System.out.println("Guess something HIGHER.");
+
+            System.out.print("Would you like to play again? (yes/no): ");
+            String response = scanner.next();
+            if (!response.equalsIgnoreCase("yes")) {
+                playAgain = false;
             }
-            else{
-                System.out.println("Guess something LOWER.");
-            }
-        } 
-        Scanner.close();
+        }
+
+        System.out.println("Thanks for playing!");
+        scanner.close();
     }
 }
